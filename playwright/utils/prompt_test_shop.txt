@@ -1,0 +1,21 @@
+Create a Playwright test in Python using pytest that follows best practices and uses Page Object Model.
+
+Test steps:
+
+1. Navigate to https://rahulshettyacademy.com/loginpagePractise/
+2. Enter username as "rahulshettyacademy" and password as "Learning@830$3mK2"
+3. Click the Sign In button
+4. Wait until the page is navigated to https://rahulshettyacademy.com/angularpractice/shop
+5. Verify that the "iPhone X" product is present on the shop page
+
+Requirements:
+
+- Use Playwright sync API for Python
+- Use pytest framework
+- Create proper page object classes for:
+  - Login Page
+  - Shop Page
+- Use reliable locators
+- Add appropriate assertions
+- Follow a scalable test framework structure
+- Include comments where helpful
