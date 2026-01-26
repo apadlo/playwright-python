@@ -1,3 +1,7 @@
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 import pytest
 from playwright.sync_api import Playwright
 from page_objects.login_practice import LoginPracticePage
@@ -7,7 +11,7 @@ class TestShopPOM:
     """End-to-end test using Page Object Model to verify a product exists in the shop."""
 
     USERNAME = "rahulshettyacademy"
-    PASSWORD = "Learning@830$3mK2"
+    PASSWORD = os.getenv("USER_PASSWORD")
     TARGET_PRODUCT = "iPhone X"
 
     def test_product_present_after_login(self, playwright: Playwright, browser_instance):

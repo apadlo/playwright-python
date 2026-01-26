@@ -3,7 +3,7 @@ Create a Playwright test in Python using pytest that follows best practices and 
 Test steps:
 
 1. Navigate to https://rahulshettyacademy.com/loginpagePractise/
-2. Enter username as "rahulshettyacademy" and password as "Learning@830$3mK2"
+2. Enter username as "rahulshettyacademy" and password as provided on the login page
 3. Click the Sign In button
 4. Wait until the page is navigated to https://rahulshettyacademy.com/angularpractice/shop
 5. Verify that the "iPhone X" product is present on the shop page
