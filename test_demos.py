@@ -2,12 +2,14 @@ import pytest
 
 class TestPolishUser:
 
+    @pytest.mark.sanity
     def test_user_data(self, polish_user_factory):
         user = polish_user_factory()
         print(user)
 
         assert user is not None
 
+    @pytest.mark.sanity
     def test_user_has_required_fields(self, polish_user_factory):
         user = polish_user_factory()
 
@@ -23,6 +25,7 @@ class TestPolishUser:
         }
         assert expected_fields.issubset(user.keys())
 
+    @pytest.mark.regression
     @pytest.mark.xfail
     def test_email_matches_name(self, polish_user_factory):
         user = polish_user_factory()
@@ -32,6 +35,7 @@ class TestPolishUser:
         assert user["first_name"].lower() in email_prefix
         assert user["last_name"].lower() in email_prefix
 
+    @pytest.mark.regression
     @pytest.mark.xfail
     def test_gender_matches_pesel(self, polish_user_factory):
         user = polish_user_factory()
@@ -43,6 +47,7 @@ class TestPolishUser:
         else:
             assert last_digit % 2 == 0
 
+    @pytest.mark.sanity
     def test_pesel_format(self, polish_user_factory):
         user = polish_user_factory()
 
@@ -51,7 +56,7 @@ class TestPolishUser:
         assert len(pesel) == 11
         assert pesel.isdigit()
 
-
+    @pytest.mark.regression
     def test_email_domain_is_polish(self, polish_user_factory):
         user = polish_user_factory()
 
@@ -59,6 +64,8 @@ class TestPolishUser:
 
         assert domain in {"gmail.com", "wp.pl", "onet.pl", "interia.pl", "o2.pl"}
 
+    @pytest.mark.sanity
+    @pytest.mark.regression
     def test_factory_creates_unique_users(self, polish_user_factory):
         user1 = polish_user_factory()
         user2 = polish_user_factory()
