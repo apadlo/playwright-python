@@ -9,6 +9,7 @@ load_dotenv()
 
 class TestBasics:
     user_name = "andrzej@testowy.pl"
+    example_url = "https://example.com/"
 
     @staticmethod
     def intercept_response(route):
@@ -24,10 +25,12 @@ class TestBasics:
         browser = playwright.chromium.launch(headless=False)
         context = browser.new_context()
         page = context.new_page()
-        page.goto("https://rahulshettyacademy.com/")
+        page.goto(self.example_url)
+        expect(page).to_have_url(self.example_url)
 
-    def test_shortcut(self, page: Page): # page is in default available in chromium headless with 1 context
-        page.goto("https://rahulshettyacademy.com/")
+    def test_basics_shortcut(self, page: Page): # page is in default available in chromium headless with 1 context
+        page.goto(self.example_url)
+        expect(page).to_have_title("Example Domain")
 
     def test_locators_chrome(self, page: Page):
         page.goto("https://rahulshettyacademy.com/loginpagePractise/")
@@ -160,7 +163,6 @@ class TestBasics:
         # ---------------------
         context.close()
         browser.close()
-
 
 
 
