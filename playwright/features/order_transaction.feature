@@ -10,4 +10,4 @@ Feature: Order Transaction
     Then order message is displayed
     Examples:
       | user_name            |
-      | andrzej@testowy.pl   |
+      | test@example.com     |

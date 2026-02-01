@@ -9,7 +9,7 @@ load_dotenv()
 
 
 class TestBasicsPOM:
-    user_name = "andrzej@testowy.pl"
+    user_name = os.getenv("TEST_EMAIL", "test@example.com")
 
     @staticmethod
     def intercept_response(route):
