@@ -10,8 +10,8 @@ from page_objects.login_practice import LoginPracticePage
 class TestShopPOM:
     """End-to-end test using Page Object Model to verify a product exists in the shop."""
 
-    USERNAME = "rahulshettyacademy"
-    PASSWORD = os.getenv("USER_PASSWORD")
+    USERNAME = os.getenv("PRACTICE_USERNAME", "rahulshettyacademy")
+    PASSWORD = os.getenv("PRACTICE_PASSWORD")
     TARGET_PRODUCT = "iPhone X"
 
     def test_product_present_after_login(self, playwright: Playwright, browser_instance):

@@ -8,7 +8,7 @@ load_dotenv()
 
 
 class TestBasics:
-    user_name = "andrzej@testowy.pl"
+    user_name = os.getenv("TEST_EMAIL", "test@example.com")
     example_url = "https://example.com/"
 
     @staticmethod
@@ -34,8 +34,8 @@ class TestBasics:
 
     def test_locators_chrome(self, page: Page):
         page.goto("https://rahulshettyacademy.com/loginpagePractise/")
-        page.get_by_label("Username:").fill("rahulshettyacademy")
-        page.get_by_label("Password:").fill("learning_wrongpw")
+        page.get_by_label("Username:").fill(os.getenv("PRACTICE_USERNAME", "rahulshettyacademy"))
+        page.get_by_label("Password:").fill(os.getenv("PRACTICE_WRONG_PASSWORD", "test_wrong_password"))
         page.get_by_role("combobox").select_option("teach")
         page.locator("#terms").check()
         page.get_by_role("button", name="Sign In").click()
@@ -45,8 +45,8 @@ class TestBasics:
         browser = playwright.firefox.launch(headless=False)
         page = browser.new_page()
         page.goto("https://rahulshettyacademy.com/loginpagePractise/")
-        page.get_by_label("Username:").fill("rahulshettyacademy")
-        page.get_by_label("Password:").fill("learning_wrongpw")
+        page.get_by_label("Username:").fill(os.getenv("PRACTICE_USERNAME", "rahulshettyacademy"))
+        page.get_by_label("Password:").fill(os.getenv("PRACTICE_WRONG_PASSWORD", "test_wrong_password"))
         page.get_by_role("combobox").select_option("teach")
         page.locator("#terms").check()
         page.get_by_role("button", name="Sign In").click()
@@ -57,8 +57,8 @@ class TestBasics:
         context = browser.new_context()
         page = context.new_page()
         page.goto("https://rahulshettyacademy.com/loginpagePractise/")
-        page.get_by_label("Username:").fill("rahulshettyacademy")
-        page.get_by_label("Password:").fill("Learning@830$3mK2")
+        page.get_by_label("Username:").fill(os.getenv("PRACTICE_USERNAME", "rahulshettyacademy"))
+        page.get_by_label("Password:").fill(os.getenv("PRACTICE_PASSWORD"))
         page.get_by_role("combobox").select_option("teach")
         page.locator("#terms").check()
         page.get_by_role("button", name="Sign In").click()

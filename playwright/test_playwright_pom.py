@@ -1,9 +1,13 @@
 from playwright.sync_api import Playwright
 import resources.generic as gen
 from page_objects.login import LoginPage
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class TestPOM:
-    user_name = "andrzej@testowy.pl"
+    user_name = os.getenv("TEST_EMAIL", "test@example.com")
 
     def test_create_order(self, playwright: Playwright, browser_instance):
         payload = {"orders": [
