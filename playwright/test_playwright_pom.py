@@ -1,6 +1,9 @@
 from playwright.sync_api import Playwright
 import resources.generic as gen
 from page_objects.login import LoginPage
+from page_objects.portfolio import PortfolioPage
+from page_objects.chat_page import ChatPage
+from page_objects.smart_scrapper_page import SmartScrapperPage
 import os
 from dotenv import load_dotenv
 
@@ -31,3 +34,19 @@ class TestPOM:
         orders_page = dashboard_page.select_orders()
         order_details = orders_page.select_order(order_id)
         order_details.verify_order_message()
+
+
+    def test_verify_streamlit_pages_online(self, browser_instance):
+        page = browser_instance
+        portfolio_page = PortfolioPage(page)
+        chat_page = ChatPage(page)
+        smart_scrapper_page = SmartScrapperPage(page)
+
+        portfolio_page.navigate()
+        portfolio_page.verify_download_button()
+
+        chat_page.navigate()
+        chat_page.verify_message_visible()
+
+        smart_scrapper_page.navigate()
+        smart_scrapper_page.verify_heading_link_visible()
