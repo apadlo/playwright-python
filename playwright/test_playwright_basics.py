@@ -52,6 +52,47 @@ class TestBasics:
         page.get_by_role("button", name="Sign In").click()
         expect(page.get_by_text("Incorrect username/password.")).to_be_visible()
 
+    def test_playwright_locators(self, browser_instance):
+        page = browser_instance
+        page.goto("https://demo.nopcommerce.com/")
+
+        logo = page.get_by_alt_text("nopCommerce demo store")
+        expect(logo).to_be_visible()
+
+        welcome_text = page.get_by_text("Welcome to our store")
+        expect(welcome_text).to_be_visible()
+
+        page.goto("https://demo.nopcommerce.com/register?returnUrl=%2F")
+        expect(page.get_by_role("heading", name="Register")).to_be_visible()
+
+        page.get_by_label("First name:").fill("John")
+        page.get_by_label("Last name:").fill("Doe")
+        page.get_by_label("Email:").fill("john.doe@example.com")
+
+        page.get_by_placeholder("Search store").fill("iphone")
+        page.get_by_role("button", name="Search").click()
+
+        page.goto("https://testautomationpractice.blogspot.com/p/playwrightpractice.html")
+        expect(page.get_by_title("HyperText Markup Language")).to_have_text("HTML")
+
+        expect(page.get_by_test_id("profile-name")).to_have_text("John Doe")
+        expect(page.get_by_test_id("profile-email")).to_have_text("john.doe@example.com")
+
+        page.goto("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
+        page.get_by_placeholder("Username").fill("Admin")
+        page.get_by_placeholder("Password").fill("admin123")
+        page.get_by_role("button", name="Login").click()
+        expect(page.get_by_role("heading", name="Dashboard")).to_be_visible()
+
+    def test_css_xpath_locators(self, browser_instance):
+        page = browser_instance
+        page.goto("https://demowebshop.tricentis.com/")
+        # Xpath locator
+        expect(page.locator("//img[@alt='Tricentis Demo Web Shop']")).to_be_visible()
+        # CSS locators
+        page.locator("input[name=q]").fill("laptop")
+        search_button = page.locator(".button-1.search-box-button").click()
+
     def test_checkout(self, playwright):
         browser = playwright.chromium.launch(headless=False)
         context = browser.new_context()
