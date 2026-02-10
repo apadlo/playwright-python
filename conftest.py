@@ -70,7 +70,7 @@ def browser_instance(playwright, request):
     browser_name = request.config.getoption("--browser_name")
     match browser_name:
         case "chrome":
-            browser = playwright.chromium.launch(headless=False)
+            browser = playwright.chromium.launch()
         case "firefox":
             browser = playwright.firefox.launch(headless=False)
         case _:
