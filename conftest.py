@@ -1,7 +1,18 @@
-import pytest
-from faker import Faker
 import random
 import re
+import sys
+from pathlib import Path
+
+import pytest
+from faker import Faker
+
+WORKSPACE_ROOT = Path(__file__).resolve().parent
+PLAYWRIGHT_APP_DIR = WORKSPACE_ROOT / "playwright"
+
+# Keep legacy imports working (e.g. `import resources.generic`, `from page_objects...`).
+if str(PLAYWRIGHT_APP_DIR) not in sys.path:
+    sys.path.insert(0, str(PLAYWRIGHT_APP_DIR))
+
 
 fake = Faker("pl_PL")
 # fake.seed_instance(1234)
@@ -63,18 +74,26 @@ def get_name():
     return fake.name()
 
 def pytest_addoption(parser):
-    parser.addoption("--browser_name", action="store", default="chrome", help="browser to use, default: chrome")
+    parser.addoption("--browser_name", action="store", default="chrome", help="Browser to use: chrome|firefox|webkit")
+    parser.addoption("--headed", action="store_true", default=False, help="Run browsers in headed mode")
+
 
 @pytest.fixture
 def browser_instance(playwright, request):
     browser_name = request.config.getoption("--browser_name")
+    headed = request.config.getoption("--headed")
+    headless = not headed
+
     match browser_name:
-        case "chrome":
-            browser = playwright.chromium.launch()
+        case "chrome" | "chromium":
+            browser = playwright.chromium.launch(headless=headless)
         case "firefox":
-            browser = playwright.firefox.launch(headless=False)
+            browser = playwright.firefox.launch(headless=headless)
+        case "webkit":
+            browser = playwright.webkit.launch(headless=headless)
         case _:
             raise ValueError(f"Unsupported browser: {browser_name}")
+
     context = browser.new_context()
     page = context.new_page()
     yield page

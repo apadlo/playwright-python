@@ -137,6 +137,11 @@ playwright-python/
 │   ├── test_pytest-bdd-example.py     # BDD examples
 │   └── test_codegen.py                # Codegen examples
 │
+├── tests/                        # Fast unit tests for page objects (no browser/network)
+│   ├── test_login_and_shop_pom_unit.py
+│   ├── test_orders_flow_pom_unit.py
+│   └── test_streamlit_page_objects_unit.py
+│
 ├── assets/                       # Report assets
 │   └── style.css                # Custom report styling
 │
@@ -245,6 +250,10 @@ pytest playwright/test_shop_pom.py::TestShopPOM::test_product_present_after_logi
 ```bash
 pytest -m sanity
 pytest -m regression
+pytest -m smoke
+pytest -m unit
+pytest -m "e2e and not streamlit"
+pytest -m streamlit
 ```
 
 ### Run Tests in Parallel
@@ -254,7 +263,31 @@ pytest -n 4     # Use 4 workers
 ```
 
 ### Run in Headless Mode
-Modify `conftest.py` to set `headless=True` in browser launch configuration.
+Headless is now default. For local headed runs use:
+```bash
+pytest --headed
+```
+
+### Jenkins / CI command examples
+Use these commands in Jenkins pipeline stages (Linux shell):
+
+```bash
+# 1) Install dependencies
+python -m pip install -r requirements.txt
+playwright install --with-deps chromium
+
+# 2) Fast gate (recommended PR check)
+pytest -m "unit or smoke" -q
+
+# 3) Expanded browser suite (excluding Streamlit external checks)
+pytest -m "e2e and not streamlit" --browser_name=chrome -q
+
+# 4) Streamlit checks (optional, external dependency)
+pytest -m streamlit --browser_name=chrome -q
+
+# 5) Full suite
+pytest -m "unit or smoke or e2e or streamlit or sanity or regression" --browser_name=chrome
+```
 
 ---
 
