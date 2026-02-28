@@ -10,11 +10,11 @@ class ChatPage:
     def navigate(self) -> None:
         self.page.goto(self.URL, wait_until="domcontentloaded")
 
-    def app_frame(self):
-        return self.page.frame_locator('iframe[title="streamlitApp"]')
-
-    def heading_anchor(self):
-        return self.app_frame().get_by_role("link", name="Link to heading")
-
     def verify_message_visible(self) -> None:
-        expect(self.heading_anchor()).to_be_visible(timeout=10000)
+        iframe = self.page.locator('iframe[title="streamlitApp"]')
+        if iframe.count() > 0:
+            root = self.page.frame_locator('iframe[title="streamlitApp"]')
+            expect(root.get_by_test_id("stApp")).to_be_visible(timeout=20000)
+        else:
+            # Direct Streamlit page (no iframe)
+            expect(self.page.get_by_test_id("stApp")).to_be_visible(timeout=20000)

@@ -75,13 +75,17 @@ def get_name():
 
 def pytest_addoption(parser):
     parser.addoption("--browser_name", action="store", default="chrome", help="Browser to use: chrome|firefox|webkit")
-    parser.addoption("--headed", action="store_true", default=False, help="Run browsers in headed mode")
 
 
 @pytest.fixture
 def browser_instance(playwright, request):
     browser_name = request.config.getoption("--browser_name")
-    headed = request.config.getoption("--headed")
+    # --headed is provided by pytest-playwright; fallback keeps this fixture usable
+    # even when that plugin is not loaded.
+    try:
+        headed = request.config.getoption("--headed")
+    except Exception:
+        headed = False
     headless = not headed
 
     match browser_name:

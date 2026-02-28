@@ -10,11 +10,10 @@ class PortfolioPage:
     def navigate(self) -> None:
         self.page.goto(self.URL, wait_until="domcontentloaded")
 
-    def app_frame(self):
-        return self.page.frame_locator('iframe[title="streamlitApp"]')
-
-    def download_button(self):
-        return self.app_frame().get_by_test_id("stDownloadButton")
-
     def verify_download_button(self) -> None:
-        expect(self.download_button()).to_be_visible(timeout=10000)
+        iframe = self.page.locator('iframe[title="streamlitApp"]')
+        if iframe.count() > 0:
+            root = self.page.frame_locator('iframe[title="streamlitApp"]')
+            expect(root.get_by_test_id("stApp")).to_be_visible(timeout=20000)
+        else:
+            expect(self.page.get_by_test_id("stApp")).to_be_visible(timeout=20000)

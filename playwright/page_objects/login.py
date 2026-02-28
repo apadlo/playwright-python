@@ -14,6 +14,7 @@ class LoginPage:
 
     def login(self, user_name):
         self.page.get_by_placeholder("email@example.com").fill(user_name)
-        self.page.locator("#userPassword").fill(os.getenv("USER_PASSWORD"))
+        password = os.getenv("USER_PASSWORD", "Password@1")
+        self.page.locator("#userPassword").fill(password)
         self.page.get_by_role("button", name="Login").click()
         return DashboardPage(self.page)

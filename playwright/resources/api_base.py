@@ -14,7 +14,7 @@ class APIUtils:
     def get_token(self, playwright: Playwright, user_name):
         endpoint = "api/ecom/auth/login"
         api_request_context = playwright.request.new_context(base_url=self.BASE_URL)
-        payload = {"userEmail": user_name,"userPassword": os.getenv("USER_PASSWORD")}
+        payload = {"userEmail": user_name, "userPassword": os.getenv("USER_PASSWORD", "Password@1")}
         response = api_request_context.post(endpoint, data=payload)
         assert response.ok
         token = response.json().get("token")

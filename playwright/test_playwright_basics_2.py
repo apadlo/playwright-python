@@ -50,13 +50,13 @@ class TestBasicsPOM:
         # obtain token via API utils and inject into localStorage, then verify orders page opens
         token = gen.api_utils.get_token(playwright, self.user_name)
 
-        browser = playwright.chromium.launch(headless=False)
+        browser = playwright.chromium.launch(headless=True)
         context = browser.new_context()
         page = context.new_page()
         page.add_init_script(f"""localStorage.setItem('token', '{token}')""")
         page.goto("https://rahulshettyacademy.com/client/")
         page.get_by_role("button", name="ORDERS").click()
-        expect(page.get_by_text("Your Orders")).to_be_visible()
+        expect(page.get_by_role("heading", name="Your Orders")).to_be_visible(timeout=15000)
 
         context.close()
         browser.close()
