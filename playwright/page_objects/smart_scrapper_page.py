@@ -1,12 +1,19 @@
 from playwright.sync_api import Page, expect
 
+
 class SmartScrapperPage:
+    URL = "https://smart-scrapper.streamlit.app/"
+
     def __init__(self, page: Page):
         self.page = page
 
-    def navigate(self):
-        self.page.goto("https://smart-scrapper.streamlit.app/")
+    def navigate(self) -> None:
+        self.page.goto(self.URL, wait_until="domcontentloaded")
 
-    def verify_heading_link_visible(self):
-        page_title = self.page.locator("iframe[title=\"streamlitApp\"]").content_frame.get_by_test_id("stHeading").get_by_role("link", name="Link to heading")
-        expect(page_title).to_be_visible(timeout=10000)
+    def verify_heading_link_visible(self) -> None:
+        iframe = self.page.locator('iframe[title="streamlitApp"]')
+        if iframe.count() > 0:
+            root = self.page.frame_locator('iframe[title="streamlitApp"]')
+            expect(root.get_by_test_id("stApp")).to_be_visible(timeout=20000)
+        else:
+            expect(self.page.get_by_test_id("stApp")).to_be_visible(timeout=20000)

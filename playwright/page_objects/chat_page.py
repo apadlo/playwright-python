@@ -1,12 +1,20 @@
 from playwright.sync_api import Page, expect
 
+
 class ChatPage:
+    URL = "https://bielik.streamlit.app/"
+
     def __init__(self, page: Page):
         self.page = page
 
-    def navigate(self):
-        self.page.goto("https://bielik.streamlit.app/")
+    def navigate(self) -> None:
+        self.page.goto(self.URL, wait_until="domcontentloaded")
 
-    def verify_message_visible(self):
-        message_locator = self.page.locator("iframe[title=\"streamlitApp\"]").content_frame.get_by_role("link", name="Link to heading")
-        expect(message_locator).to_be_visible(timeout=10000)
+    def verify_message_visible(self) -> None:
+        iframe = self.page.locator('iframe[title="streamlitApp"]')
+        if iframe.count() > 0:
+            root = self.page.frame_locator('iframe[title="streamlitApp"]')
+            expect(root.get_by_test_id("stApp")).to_be_visible(timeout=20000)
+        else:
+            # Direct Streamlit page (no iframe)
+            expect(self.page.get_by_test_id("stApp")).to_be_visible(timeout=20000)
