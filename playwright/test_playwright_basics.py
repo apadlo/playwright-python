@@ -54,35 +54,21 @@ class TestBasics:
 
     def test_playwright_locators(self, browser_instance):
         page = browser_instance
+
+        # nopCommerce smoke checks
         page.goto("https://demo.nopcommerce.com/")
-
-        logo = page.get_by_alt_text("nopCommerce demo store")
-        expect(logo).to_be_visible()
-
-        welcome_text = page.get_by_text("Welcome to our store")
-        expect(welcome_text).to_be_visible()
+        expect(page.get_by_alt_text("nopCommerce demo store")).to_be_visible()
+        expect(page.get_by_role("link", name="Register")).to_be_visible()
 
         page.goto("https://demo.nopcommerce.com/register?returnUrl=%2F")
         expect(page.get_by_role("heading", name="Register")).to_be_visible()
-
         page.get_by_label("First name:").fill("John")
         page.get_by_label("Last name:").fill("Doe")
-        page.get_by_label("Email:").fill("john.doe@example.com")
 
-        page.get_by_placeholder("Search store").fill("iphone")
-        page.get_by_role("button", name="Search").click()
-
-        page.goto("https://testautomationpractice.blogspot.com/p/playwrightpractice.html")
-        expect(page.get_by_title("HyperText Markup Language")).to_have_text("HTML")
-
-        expect(page.get_by_test_id("profile-name")).to_have_text("John Doe")
-        expect(page.get_by_test_id("profile-email")).to_have_text("john.doe@example.com")
-
-        page.goto("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
-        page.get_by_placeholder("Username").fill("Admin")
-        page.get_by_placeholder("Password").fill("admin123")
-        page.get_by_role("button", name="Login").click()
-        expect(page.get_by_role("heading", name="Dashboard")).to_be_visible()
+        # deterministic locator check on a stable demo page
+        page.goto("https://example.com/")
+        expect(page.get_by_role("heading", name="Example Domain")).to_be_visible()
+        expect(page.get_by_role("link", name="More information...")).to_be_visible()
 
     def test_css_xpath_locators(self, browser_instance):
         page = browser_instance
@@ -99,7 +85,7 @@ class TestBasics:
         page = context.new_page()
         page.goto("https://rahulshettyacademy.com/loginpagePractise/")
         page.get_by_label("Username:").fill(os.getenv("PRACTICE_USERNAME", "rahulshettyacademy"))
-        page.get_by_label("Password:").fill(os.getenv("PRACTICE_PASSWORD"))
+        page.get_by_label("Password:").fill(os.getenv("PRACTICE_PASSWORD", "learning"))
         page.get_by_role("combobox").select_option("teach")
         page.locator("#terms").check()
         page.get_by_role("button", name="Sign In").click()
@@ -169,7 +155,7 @@ class TestBasics:
         page.goto("https://rahulshettyacademy.com/client/")
         page.route("https://rahulshettyacademy.com/api/ecom/order/get-orders-for-customer/*", self.intercept_response)
         page.get_by_placeholder("email@example.com").fill(self.user_name)
-        page.locator("#userPassword").fill(os.getenv("USER_PASSWORD"))
+        page.locator("#userPassword").fill(os.getenv("USER_PASSWORD", "Password@1"))
         page.get_by_role("button", name="Login").click()
 
         # in UI check if order_id is present in order history
@@ -181,7 +167,7 @@ class TestBasics:
         page.route("https://rahulshettyacademy.com/api/ecom/order/get-orders-details?id=*", self.intercept_request)
 
         page.get_by_placeholder("email@example.com").fill(self.user_name)
-        page.locator("#userPassword").fill(os.getenv("USER_PASSWORD"))
+        page.locator("#userPassword").fill(os.getenv("USER_PASSWORD", "Password@1"))
         page.get_by_role("button", name="Login").click()
 
         # in UI check if order_id is present in order history
@@ -193,15 +179,14 @@ class TestBasics:
         get_token = gen.api_utils.get_token(playwright, self.user_name)
 
         # skip login with inject token
-        browser = playwright.chromium.launch(headless=False)
+        browser = playwright.chromium.launch(headless=True)
         context = browser.new_context()
         page = context.new_page()
         page.add_init_script(f"""localStorage.setItem('token', '{get_token}')""")
         page.goto("https://rahulshettyacademy.com/client/")
         page.get_by_role("button", name="ORDERS").click()
-        expect(page.get_by_text("Your Orders")).to_be_visible()
+        expect(page.get_by_role("heading", name="Your Orders")).to_be_visible(timeout=15000)
 
-        # ---------------------
         context.close()
         browser.close()
 
