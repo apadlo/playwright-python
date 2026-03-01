@@ -10,7 +10,6 @@ scenarios('features/order_transaction.feature')
 def shared_data():
     return {}
 
-
 @given(parsers.parse('place the item order with {user_name}'))
 def place_item_order(playwright, user_name, shared_data):
     payload = {"orders": [
